@@ -1,19 +1,34 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { ArrowLeft, CheckCircle2, Loader2 } from "lucide-react"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
+import { signup } from "../actions/signup";
 
 const formSchema = z.object({
   businessName: z.string().min(2, {
@@ -22,36 +37,42 @@ const formSchema = z.object({
   whatsappNumber: z.string().min(10, {
     message: "Please enter a valid WhatsApp number.",
   }),
-  productDetails: z.string().min(10, {
-    message: "Please provide some details about your products.",
-  }),
   language: z.enum(["english", "twi", "pidgin", "formal"]),
-})
+});
 
 export default function SignupPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
-  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       businessName: "",
       whatsappNumber: "",
-      productDetails: "",
       language: "english",
     },
-  })
+  });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsSubmitting(true)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log(values)
-      setIsSubmitting(false)
-      setIsSuccess(true)
-    }, 1500)
+    try {
+      const formData = new FormData();
+
+      for (const key in values) {
+        formData.append(key, values[key as keyof typeof values]);
+      }
+
+      await signup(formData);
+
+      setIsSuccess(true);
+    } catch (error) {
+      console.error("Error during signup:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -69,8 +90,7 @@ export default function SignupPage() {
       <main className="container mx-auto px-4 py-12 max-w-3xl">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-6 hover:text-foreground"
-        >
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-6 hover:text-foreground">
           <ArrowLeft className="h-4 w-4" />
           Back to home
         </Link>
@@ -83,19 +103,21 @@ export default function SignupPage() {
               </div>
               <CardTitle className="text-2xl mb-4">Setup Complete!</CardTitle>
               <CardDescription className="text-lg mb-8">
-                Your VendorBot is being configured. We'll send you an activation link to your WhatsApp number shortly.
+                Your VendorBot is being configured. We'll send you an activation
+                link to your WhatsApp number shortly.
               </CardDescription>
               <Button
                 onClick={() => router.push("/")}
-                className="rounded-full bg-green-600 hover:bg-green-700 text-white px-8"
-              >
+                className="rounded-full bg-green-600 hover:bg-green-700 text-white px-8">
                 Return to Home
               </Button>
             </CardContent>
           </Card>
         ) : (
           <>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">Set up your own WhatsApp assistant</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">
+              Set up your own WhatsApp assistant
+            </h1>
             <p className="text-muted-foreground text-center mb-10">
               Fill in the details below to configure your VendorBot
             </p>
@@ -103,11 +125,16 @@ export default function SignupPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Business Information</CardTitle>
-                <CardDescription>Enter your business details to customize your WhatsApp assistant</CardDescription>
+                <CardDescription>
+                  Enter your business details to customize your WhatsApp
+                  assistant
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6">
                     <FormField
                       control={form.control}
                       name="businessName"
@@ -115,9 +142,14 @@ export default function SignupPage() {
                         <FormItem>
                           <FormLabel>Business Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Your Business Name" {...field} />
+                            <Input
+                              placeholder="Your Business Name"
+                              {...field}
+                            />
                           </FormControl>
-                          <FormDescription>This is how your business will appear to customers.</FormDescription>
+                          <FormDescription>
+                            This is how your business will appear to customers.
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -133,27 +165,9 @@ export default function SignupPage() {
                             <Input placeholder="+233 XX XXX XXXX" {...field} />
                           </FormControl>
                           <FormDescription>
-                            We'll send you notifications when human assistance is needed.
+                            We'll send you notifications when human assistance
+                            is needed.
                           </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="productDetails"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Product Details</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Enter your product details or paste your product list here..."
-                              className="min-h-32"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>List your products with prices, or describe what you sell.</FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -169,36 +183,32 @@ export default function SignupPage() {
                             <RadioGroup
                               onValueChange={field.onChange}
                               defaultValue={field.value}
-                              className="flex flex-col space-y-1"
-                            >
-                              <FormItem className="flex items-center space-x-3 space-y-0">
-                                <FormControl>
-                                  <RadioGroupItem value="english" />
-                                </FormControl>
-                                <FormLabel className="font-normal">English (Casual)</FormLabel>
-                              </FormItem>
-                              <FormItem className="flex items-center space-x-3 space-y-0">
-                                <FormControl>
-                                  <RadioGroupItem value="twi" />
-                                </FormControl>
-                                <FormLabel className="font-normal">Twi</FormLabel>
-                              </FormItem>
-                              <FormItem className="flex items-center space-x-3 space-y-0">
-                                <FormControl>
-                                  <RadioGroupItem value="pidgin" />
-                                </FormControl>
-                                <FormLabel className="font-normal">Ghanaian Pidgin</FormLabel>
-                              </FormItem>
-                              <FormItem className="flex items-center space-x-3 space-y-0">
-                                <FormControl>
-                                  <RadioGroupItem value="formal" />
-                                </FormControl>
-                                <FormLabel className="font-normal">Formal Business</FormLabel>
-                              </FormItem>
+                              className="flex flex-col space-y-1">
+                              {[
+                                { value: "english", label: "English (Casual)" },
+                                { value: "twi", label: "Twi" },
+                                { value: "pidgin", label: "Ghanaian Pidgin" },
+                                { value: "formal", label: "Formal Business" },
+                              ].map((option) => (
+                                <FormItem
+                                  key={option.value}
+                                  className="flex items-center space-x-3 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem
+                                      disabled
+                                      value={option.value}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    {option.label}
+                                  </FormLabel>
+                                </FormItem>
+                              ))}
                             </RadioGroup>
                           </FormControl>
                           <FormDescription>
-                            How would you like your assistant to communicate with customers?
+                            How would you like your assistant to communicate
+                            with customers?
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
@@ -208,8 +218,7 @@ export default function SignupPage() {
                     <Button
                       type="submit"
                       className="w-full rounded-full bg-green-600 hover:bg-green-700 text-white"
-                      disabled={isSubmitting}
-                    >
+                      disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -227,5 +236,5 @@ export default function SignupPage() {
         )}
       </main>
     </div>
-  )
+  );
 }
