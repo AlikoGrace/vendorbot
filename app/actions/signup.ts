@@ -22,7 +22,10 @@ export const signup = async (formData: FormData) => {
   });
 
   await twilioClient.messages.create({
-    body: `Hi ${businessName}, I am venderbot. What would you like to name me?`,
+    contentSid: "HXd56d794c437c3f029a6639cafe071a0d",
+    contentVariables: JSON.stringify({
+      vendor: businessName,
+    }),
     to: "whatsapp:+233507989633",
     from: "whatsapp:+14155238886",
   });
