@@ -1,37 +1,27 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.pdb
+# dependencies
+/node_modules
 
+# next.js
+/.next/
+/out/
 
-venv/
-env/
-.venv/
+# production
+/build
 
-.env
-.env.*
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
+# env files
+.env*
 
-.vscode/
+# vercel
+.vercel
 
-.DS_Store
-Thumbs.db
-
-*.log
-*.sqlite3
-*.db
-
-*.egg-info/
-dist/
-build/
-
-.hotreload/
-
-.pytest_cache/
-.coverage
-htmlcov/
-coverage.xml
-
-
+# typescript
+*.tsbuildinfo
+next-env.d.ts
