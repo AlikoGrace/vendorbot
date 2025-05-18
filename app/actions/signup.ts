@@ -24,10 +24,22 @@ export const signup = async (formData: FormData) => {
     messaging_product: "whatsapp",
     type: "template",
     template: {
-      name: "hello_world",
+      name: "welcome",
       language: {
         code: "en_US",
       },
+      components: [
+        {
+          type: "header",
+          parameters: [
+            {
+              type: "text",
+              parameter_name: "business_name",
+              text: businessName,
+            },
+          ],
+        },
+      ],
     },
   };
 
@@ -42,5 +54,5 @@ export const signup = async (formData: FormData) => {
 
   const data = await response.json();
 
-  console.log({ data });
+  console.log({ data: JSON.stringify(data, null, 4) });
 };
