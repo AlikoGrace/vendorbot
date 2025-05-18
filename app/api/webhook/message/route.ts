@@ -1,6 +1,12 @@
 import Prisma from "@/lib/prisma";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import MessagingResponse from "twilio/lib/twiml/MessagingResponse";
+
+export async function GET(req: NextRequest) {
+  const challenge = new URL(req.url).searchParams.get("hub_challenge");
+
+  return new NextResponse(challenge);
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
