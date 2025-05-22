@@ -10,24 +10,44 @@ datasource db {
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+/// Product listings uploaded by vendors, optionally grouped by category.
 model products {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at DateTime @default(now()) @db.Timestamptz(6)
-  vendor_id  String?  @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name       String?
-  price      Decimal? @db.Decimal
-  image_url  String?
-  stock      Int?     @db.SmallInt
-  vendors    vendors? @relation(fields: [vendor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  vendor_id   String?  @db.Uuid
+  category_id String?  @db.Uuid
+  name        String?
+  price       Decimal? @db.Decimal
+  image_url   String?
+  stock       Int?     @db.SmallInt
+
+  vendors  vendors?    @relation(fields: [vendor_id], references: [id], onDelete: Cascade)
+  category categories? @relation(fields: [category_id], references: [id], onDelete: SetNull)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+/// Vendor profile for WhatsApp-based shops.
 model vendors {
-  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at    DateTime   @default(now()) @db.Timestamptz(6)
-  phone_number  String     @unique
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  phone_number  String   @unique
   business_name String
   bot_name      String?
   onboarded     Boolean?
-  products      products[]
+
+  products   products[]
+  categories categories[]
+}
+
+/// Categories under which vendors can group their products.
+model categories {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  name      String
+  vendor_id String @db.Uuid
+
+  vendor   vendors    @relation(fields: [vendor_id], references: [id], onDelete: Cascade)
+  products products[]
 }
