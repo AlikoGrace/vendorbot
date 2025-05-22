@@ -9,7 +9,7 @@ export const signup = async (formData: FormData) => {
     data: {
       business_name: businessName,
       phone_number: formData.get("whatsappNumber") as string,
-      bot_name: `${businessName}'s Bot`,
+      bot_name: formData.get("botname") as string,
     },
   });
 

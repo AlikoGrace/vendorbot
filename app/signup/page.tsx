@@ -34,6 +34,9 @@ const formSchema = z.object({
   businessName: z.string().min(2, {
     message: "Business name must be at least 2 characters.",
   }),
+  botname: z.string().min(2, {
+    message: "Botname can not be empty.",
+  }),
   whatsappNumber: z.string().min(10, {
     message: "Please enter a valid WhatsApp number.",
   }),
@@ -90,7 +93,8 @@ export default function SignupPage() {
       <main className="container mx-auto px-4 py-12 max-w-3xl">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-6 hover:text-foreground">
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-6 hover:text-foreground"
+        >
           <ArrowLeft className="h-4 w-4" />
           Back to home
         </Link>
@@ -108,7 +112,8 @@ export default function SignupPage() {
               </CardDescription>
               <Button
                 onClick={() => router.push("/")}
-                className="rounded-full bg-green-600 hover:bg-green-700 text-white px-8">
+                className="rounded-full bg-green-600 hover:bg-green-700 text-white px-8"
+              >
                 Return to Home
               </Button>
             </CardContent>
@@ -134,7 +139,8 @@ export default function SignupPage() {
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-6">
+                    className="space-y-6"
+                  >
                     <FormField
                       control={form.control}
                       name="businessName"
@@ -149,6 +155,23 @@ export default function SignupPage() {
                           </FormControl>
                           <FormDescription>
                             This is how your business will appear to customers.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="botname"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Botname</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Name of the bot" {...field} />
+                          </FormControl>
+                          <FormDescription>
+                              This will be the name of the bot
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
@@ -183,7 +206,8 @@ export default function SignupPage() {
                             <RadioGroup
                               onValueChange={field.onChange}
                               defaultValue={field.value}
-                              className="flex flex-col space-y-1">
+                              className="flex flex-col space-y-1"
+                            >
                               {[
                                 { value: "english", label: "English (Casual)" },
                                 { value: "twi", label: "Twi" },
@@ -192,7 +216,8 @@ export default function SignupPage() {
                               ].map((option) => (
                                 <FormItem
                                   key={option.value}
-                                  className="flex items-center space-x-3 space-y-0">
+                                  className="flex items-center space-x-3 space-y-0"
+                                >
                                   <FormControl>
                                     <RadioGroupItem
                                       disabled
@@ -218,7 +243,8 @@ export default function SignupPage() {
                     <Button
                       type="submit"
                       className="w-full rounded-full bg-green-600 hover:bg-green-700 text-white"
-                      disabled={isSubmitting}>
+                      disabled={isSubmitting}
+                    >
                       {isSubmitting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
