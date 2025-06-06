@@ -94,7 +94,7 @@ export default function PricingPage() {
             <div className="mb-6">
               <h3 className="text-lg font-medium mb-1">Standard</h3>
               <div className="flex items-end gap-1 mb-2">
-                <span className="text-3xl font-bold">$19</span>
+                <span className="text-3xl font-bold">GHS 30</span>
                 <span className="text-muted-foreground mb-1">/ month</span>
               </div>
               <p className="text-muted-foreground text-sm">
@@ -141,7 +141,7 @@ export default function PricingPage() {
             <div className="mb-6">
               <h3 className="text-lg font-medium mb-1">Premium</h3>
               <div className="flex items-end gap-1 mb-2">
-                <span className="text-3xl font-bold">$49</span>
+                <span className="text-3xl font-bold">GHS 50</span>
                 <span className="text-muted-foreground mb-1">/ month</span>
               </div>
               <p className="text-muted-foreground text-sm">
